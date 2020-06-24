@@ -1,0 +1,64 @@
+version: '3'
+services:
+  app:
+    image: honvid/nginx
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - ./logs:/home/logs/nginx
+      - ./book.conf:/etc/nginx/conf.d/default.conf
+      - ../BookStack:/home/app/book
+    depends_on:
+      - php-fpm
+    external_links:
+      - php-fpm:php-fpm
+    networks:
+      - backend
+  php-fpm:
+    image: honvid/php-fpm:dev
+    container_name: php-fpm
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "9000:9000"
+    volumes:
+      - "../BookStack:/home/app/book"
+    depends_on:
+      - mysql
+      - redis
+    links:
+      - mysql:mysql-01
+      - redis:redis-01
+    networks:
+      - backend
+  redis:
+    image: redis
+    container_name: redis
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "26379:6379"
+    networks:
+      - backend
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "9306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
