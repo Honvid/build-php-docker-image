@@ -8,15 +8,14 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./logs:/home/logs/nginx
-      - ./book.conf:/etc/nginx/conf.d/default.conf
-      - ../BookStack:/home/app/book
+      - ./logs/nginx:/home/logs/nginx
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+      - ./src:/home/app
     depends_on:
       - php-fpm
-    external_links:
-      - php-fpm:php-fpm
     networks:
       - backend
+
   php-fpm:
     image: honvid/php-fpm:dev
     container_name: php-fpm
@@ -25,13 +24,10 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - "../BookStack:/home/app/book"
+      - ./src:/home/app
     depends_on:
       - mysql
       - redis
-    links:
-      - mysql:mysql-01
-      - redis:redis-01
     networks:
       - backend
   redis:

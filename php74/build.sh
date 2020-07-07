@@ -4,7 +4,6 @@ cd $CurrentDir
 if [ ! -f "tmp/ready" ];then
     rm -rf tmp
     mkdir tmp && cd tmp
-    git clone --depth=1 https://github.com/edenhill/librdkafka.git librdkafka
     git clone --depth=1 https://github.com/arnaud-lb/php-rdkafka.git php-rdkafka
     git clone --depth=1 https://github.com/mongodb/mongo-php-driver.git mongo-php-driver
     cd mongo-php-driver && git submodule sync && git submodule update --init && cd ..
@@ -12,8 +11,8 @@ if [ ! -f "tmp/ready" ];then
     git clone --depth=1 https://github.com/runkit7/runkit7.git runkit7
     git clone --depth=1 https://github.com/swoole/swoole-src.git swoole-src
     git clone --depth=1 https://github.com/xdebug/xdebug.git xdebug
-    git clone --depth=1 https://github.com/grpc/grpc grpc
-    cd grpc && git submodule update --init && cd ..
+    git clone --depth=1 -b v1.30.0 https://github.com/grpc/grpc grpc
+    git clone --depth=1 -b v3.12.2 https://github.com/protocolbuffers/protobuf.git protobuf
     touch ready
     cd ..
 fi
